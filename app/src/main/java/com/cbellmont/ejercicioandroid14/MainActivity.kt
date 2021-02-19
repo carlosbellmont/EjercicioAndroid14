@@ -5,13 +5,15 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
+import com.cbellmont.ejercicioandroid14.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var adapter : PersonajesAdapter
     private lateinit var model :MainActivityViewModel
@@ -22,16 +24,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         createRecyclerView()
         model = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
-        radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            pbLoading.visibility = View.VISIBLE
+        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            binding.pbLoading.visibility = View.VISIBLE
             when (checkedId) {
-                rbTodos.id -> cargarPersonajes(TipoPersonaje.TODOS)
-                rbBuenos.id -> cargarPersonajes(TipoPersonaje.BUENOS)
-                rbMalos.id -> cargarPersonajes(TipoPersonaje.MALOS)
+                binding.rbTodos.id -> cargarPersonajes(TipoPersonaje.TODOS)
+                binding.rbBuenos.id -> cargarPersonajes(TipoPersonaje.BUENOS)
+                binding.rbMalos.id -> cargarPersonajes(TipoPersonaje.MALOS)
             }
         }
         cargarPersonajes(TipoPersonaje.TODOS)
@@ -51,14 +54,14 @@ class MainActivity : AppCompatActivity() {
     private suspend fun mostarPersonajes(personajes: List<Personaje>) {
         withContext(Dispatchers.Main) {
             adapter.updatePersonajes(personajes)
-            pbLoading.visibility = View.GONE
+            binding.pbLoading.visibility = View.GONE
         }
     }
 
     private fun createRecyclerView() {
         adapter = PersonajesAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
     }
 
 
